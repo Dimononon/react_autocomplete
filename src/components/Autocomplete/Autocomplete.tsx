@@ -89,7 +89,13 @@ export const Autocomplete: React.FC<Props> = ({
                 handleSelect(person);
               }}
             >
-              {person.name}
+              <p
+                className={
+                  person.sex === 'm' ? 'has-text-link' : 'has-text-danger'
+                }
+              >
+                {person.name}
+              </p>
             </a>
           ))}
 
