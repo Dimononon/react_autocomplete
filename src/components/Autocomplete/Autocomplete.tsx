@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import debounce from 'lodash.debounce';
 import classNames from 'classnames';
 import { Person } from '../../types/Person';
@@ -20,10 +20,11 @@ export const Autocomplete: React.FC<Props> = ({
 
   const blurTimeout = useRef<number | null>(null);
 
-  const applyQueryDebounced = useCallback(
-    debounce((newQuery: string) => {
-      setAppliedQuery(newQuery);
-    }, delay),
+  const applyQueryDebounced = useMemo(
+    () =>
+      debounce((newQuery: string) => {
+        setAppliedQuery(newQuery);
+      }, delay),
     [delay],
   );
 
@@ -56,8 +57,14 @@ export const Autocomplete: React.FC<Props> = ({
   };
 
   const filteredItems = useMemo(() => {
+    const normalizedQuery = appliedQuery.toLowerCase().trim();
+
+    if (appliedQuery.length > 0 && normalizedQuery.length === 0) {
+      return [];
+    }
+
     return items.filter(person =>
-      person.name.toLowerCase().includes(appliedQuery.toLowerCase().trim()),
+      person.name.toLowerCase().includes(normalizedQuery),
     );
   }, [items, appliedQuery]);
 
